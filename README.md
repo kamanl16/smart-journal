@@ -1,11 +1,11 @@
-# smart-journal
 # 📓 Smart Journal AI
 
 A full-stack application that uses Google's Gemini AI to analyze the sentiment of personal journal entries in real-time. It features a modern Vue 3 frontend, a Node.js/Express backend, and persistent data storage via Supabase.
 
 ## 🚀 Features
 
--   **AI-Powered Analysis:** Automatically detects the mood (Positive, Negative, Neutral) of journal entries using Google Gemini 1.5 Flash.
+-   **AI-Powered Analysis:** Automatically detects the mood (Positive, Negative, Neutral) of journal entries using Google Gemini 3.0 Flash.
+-   **History View:** View a chronological list of past journal entries with color-coded mood tags.
 -   **Secure Authentication:** User login via Google OAuth (managed by Supabase Auth).
 -   **Private Data:** Row Level Security (RLS) ensures users can only access their own journal entries.
 -   **Real-time Database:** Stores journal entries and analysis results instantly in Supabase (PostgreSQL).
@@ -33,7 +33,7 @@ Before running this project, ensure you have the following:
 
 ### 1. Clone the Repository
 ```bash
-git clone [https://github.com/YOUR_USERNAME/smart-journal.git](https://github.com/YOUR_USERNAME/smart-journal.git)
+git clone [https://github.com/kamanl16/smart-journal.git](https://github.com/kamanl16/smart-journal.git)
 cd smart-journal
 ```
 
