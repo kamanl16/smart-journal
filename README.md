@@ -6,6 +6,8 @@ A full-stack application that uses Google's Gemini AI to analyze the sentiment o
 ## 🚀 Features
 
 -   **AI-Powered Analysis:** Automatically detects the mood (Positive, Negative, Neutral) of journal entries using Google Gemini 1.5 Flash.
+-   **Secure Authentication:** User login via Google OAuth (managed by Supabase Auth).
+-   **Private Data:** Row Level Security (RLS) ensures users can only access their own journal entries.
 -   **Real-time Database:** Stores journal entries and analysis results instantly in Supabase (PostgreSQL).
 -   **RESTful API:** Custom Node.js backend handling data processing and secure API communication.
 -   **Modern Frontend:** Built with Vue 3 (Composition API) and Vite for a fast, reactive user experience.
@@ -15,9 +17,8 @@ A full-stack application that uses Google's Gemini AI to analyze the sentiment o
 
 -   **Frontend:** Vue.js 3, Vite, JavaScript
 -   **Backend:** Node.js v24, Express.js
--   **Database:** Supabase (PostgreSQL)
--   **AI Model:** Google Gemini 1.5 Flash (via Google Generative AI SDK)
--   **Tools:** Git, npm, REST API
+-   **Database:** Supabase (PostgreSQL) + Auth
+-   **AI Model:** Google Gemini 3.0 Flash (via Google Generative AI SDK)
 
 ## ⚙️ Prerequisites
 
@@ -25,6 +26,7 @@ Before running this project, ensure you have the following:
 
 -   Node.js (v20 or higher recommended)
 -   A [Supabase](https://supabase.com/) account and project.
+-   A [Google Cloud](https://console.cloud.google.com/) Project (for OAuth keys).
 -   A [Google AI Studio](https://aistudio.google.com/) API Key.
 
 ## 📦 Installation & Setup
@@ -43,11 +45,11 @@ npm install
 # Create a .env file in the root directory
 touch .env
 ```
-Configure your .env file: Open the .env file and add your keys (do NOT share this file):
+Create a .env file in the ROOT directory:
 ```bash
 GEMINI_API_KEY=your_google_gemini_key_here
 SUPABASE_URL=your_supabase_project_url
-SUPABASE_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_KEY=your_supabase_service_role_key
 ```
 
 ### 3. Frontend Setup
@@ -55,6 +57,11 @@ The frontend runs on localhost:5173 and proxies API requests to the backend.
 ```bash
 cd client
 npm install
+```
+Create a .env file in the CLIENT directory: Vite requires variables to start with VITE_.
+```bash
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ## 🏃‍♂️ Usage
@@ -85,15 +92,11 @@ This project uses a single table in Supabase named journal_entries.
 | `created_at` | `timestamptz` | The user's journal entry |
 | `content` | `text` | Auto-generated timestamp |
 | `mood` | `text` | AI-generated sentiment analysis |
+| `user_id` | `uuid` | Linked to auth.users (Foreign Key) |
 
-
-## 🚧 Roadmap / Current Status
-* [x] Basic REST API Setup
-* [x] Gemini AI Integration
-* [x] Database Connection (Supabase)
-* [x] Vue 3 Frontend Interface
-* [ ] User Authentication (Google OAuth) [In Progress]
-* [ ] Row Level Security (RLS) Implementation
+Security Policies (RLS):
+-   Enable RLS on journal_entries.
+-   Policy: Users can only INSERT and SELECT rows where auth.uid() = user_id.
 
 ## 📄 License
 This project is licensed under the terms of the [MIT License](LICENSE.md).

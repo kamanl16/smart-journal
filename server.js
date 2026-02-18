@@ -12,17 +12,17 @@ app.use(bodyParser.json());
 // process.env loads variables from your .env file
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_KEY;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 // Safety Check: Stop the server if keys are missing
-if (!GEMINI_API_KEY || !SUPABASE_URL || !SUPABASE_KEY) {
+if (!GEMINI_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
     console.error("❌ ERROR: Missing API Keys in .env file!");
     process.exit(1);
 }
 
 // 2. SETUP THE CONNECTIONS
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
 // 3. DEFINE THE REST API ENDPOINT (The "Waiter")
@@ -30,6 +30,12 @@ const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 app.post('/api/journal', async (req, res) => {
     try {
         const userText = req.body.text; // The text you send
+        const userId = req.body.userId; // The user ID you send
+
+        if (!userText || !userId) {
+            return res.status(400).json({ error: "Missing 'text' or 'userId' in request body" });
+        }
+
         console.log("Received entry:", userText);
 
         // STEP A: Ask Gemini for the mood (The "Brain")
@@ -41,7 +47,7 @@ app.post('/api/journal', async (req, res) => {
         // STEP B: Save to Supabase (The "Filing Cabinet")
         const { data, error } = await supabase
             .from('journal_entries')
-            .insert([{ content: userText, mood: mood }])
+            .insert([{ content: userText, mood: mood, user_id: userId }])
             .select();
 
         if (error) throw error;
