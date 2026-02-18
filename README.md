@@ -1,4 +1,5 @@
 # 📓 Smart Journal AI
+![Smart Journal Demo](assets/demo.png)
 
 A full-stack application that uses Google's Gemini AI to analyze the sentiment of personal journal entries in real-time. It features a modern Vue 3 frontend, a Node.js/Express backend, and persistent data storage via Supabase.
 
